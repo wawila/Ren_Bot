@@ -87,6 +87,13 @@ WoWServices.GetCharacterStats = (user, realm) => axios.get(address + `character/
     }
 });
 
+WoWServices.GetCharacterCompleteStats = (user, realm) => axios.get(address + `character/${realm}/${user}`, {
+    params: {
+        fields: "stats items talents",
+        locale: "en_US",
+        apikey: key
+    }
+});
 
 WoWServices.GetSpell = (id) => axios.get(address + `spell/${id}`, {
     params: {
