@@ -1,45 +1,50 @@
-/*
- A ping pong bot, whenever you send "ping", it replies "pong".
- */
-
-// Import the discord.js module
 const Discord = require('discord.js');
 const config = require("./config.json");
 const fs = require("fs");
-// Create an instance of a Discord client
+const WoW = require("./Apis/Blizzard_API/WoW/inputcontroller.js");
+
 const client = new Discord.Client();
 
-// The token of your bot - https://discordapp.com/developers/applications/me
+
 const token = config.token;
 
-// The ready event is vital, it means that your bot will only start reacting to information
-// from Discord _after_ ready is emitted
 client.on('ready', () => {
     console.log('I am ready!');
 });
 
-// Create an event listener for messages
 client.on('message', message => {
-	console.log(message.content);
-	if (!message.content.startsWith(config.prefix)|| message.author.bot)
+	let text = message.content.toLowerCase();
+	
+	if (!message.content.startsWith(config.prefix) || message.author.bot)
 		return;
-    // If the message is "ping"
-    if (message.content.startsWith(config.prefix + "ping")) 
-    // Send "pong" to the same channel
-    message.channel.send('pong');
 
-    if(message.content.startsWith(config.prefix + "prefix")) {
- 		 // Gets the prefix from the command (eg. "!prefix +" it will take the "+" from it)
- 	 let newPrefix = message.content.split(" ").slice(1, 2)[0];
- 	 // change the configuration in memory
- 	 config.prefix = newPrefix;
 
-  	// Now we have to save the file.
-  	fs.writeFile("./config.json", JSON.stringify(config), (err) => console.error);
-  	message.channel.send("New prefix: "+config.prefix);
+	if(text.startsWith("+wow")) {
+		let m = WoW.inputs(text); 
+		
+		if(m === undefined)
+			return;
+
+		console.log("m ", m);
+		message.channel.send(m.data, {
+		    	file: m.file
+		    });
+	}
+
+    if(text.startsWith(config.prefix + "ping")) 
+    	message.channel.send('pong');
+
+    if(text.startsWith(config.prefix + "prefix")) {
+	 	 let newPrefix = text.split(" ").slice(1, 2)[0];
+
+	 	 config.prefix = newPrefix;
+
+	  	fs.writeFile("./config.json", JSON.stringify(config, null, 4), (err) => console.error);
+	  		message.channel.send("New prefix: "+config.prefix);
 	}
 
 });
 
 // Log our bot in
 client.login(token);
+
