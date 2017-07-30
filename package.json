@@ -1,8 +1,8 @@
 {
-  "name": "Ren_Bot",
+  "name": "Rem_Bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "mybot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
